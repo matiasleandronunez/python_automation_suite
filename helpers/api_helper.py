@@ -15,7 +15,8 @@ async def _get_request_context():
 
 
 async def get_customer_by_username(username):
-    response = await _get_request_context().get(f"/api/customer/username={username}")
+    context = await _get_request_context()
+    response = await context.get(f"/api/customer/username={username}")
 
     if response.status != 200:
         raise RequestReturnedNonOK(response.status)
@@ -24,12 +25,15 @@ async def get_customer_by_username(username):
 
 
 async def get_login_token(customer):
-    req_body = {
+    req_body = json.dumps({
                 "username": f"{customer.username}",
                 "password": f"{customer.password}"
-    }
+    }, indent=4)
 
-    response = await _get_request_context().post(f"/login/", json=req_body)
+    req_headers = {'Content-type': 'application/json'}
+
+    context = await _get_request_context()
+    response = await context.post(f"/login/", data=req_body, headers=req_headers)
 
     if response.status != 200:
         raise RequestReturnedNonOK(response.status)
@@ -40,7 +44,7 @@ async def get_login_token(customer):
 async def post_customer(customer=None):
     customer = customer if customer is not None else Customer()
 
-    req_body = {"customerId": 0,
+    req_body = json.dumps({"customerId": 0,
         "name": f"{customer.name}",
         "address": f"{customer.addr}",
         "email": f"{customer.email}",
@@ -48,9 +52,12 @@ async def post_customer(customer=None):
         "username": f"{customer.username}",
         "password": f"{customer.password}",
         "enabled": "true",
-        "role": "USER"}
+        "role": "USER"}, indent=4)
 
-    response = await _get_request_context().post(f"/api/customer/", json=req_body)
+    req_headers = {'Content-type': 'application/json'}
+
+    context = await _get_request_context()
+    response = await context.post(f"/api/customer/", data=req_body, headers=req_headers)
 
     if response.status != 201:
         if response.status == 409:
@@ -58,11 +65,13 @@ async def post_customer(customer=None):
         else:
             raise RequestReturnedNonOK(status_code=response.status)
     else:
-        return json.loads(response.text)['customerId']
+        res = await response.text()
+        return json.loads(res)['customerId']
 
 
 async def delete_all_customers():
-    response = await _get_request_context().delete(f"/api/customer/")
+    context = await _get_request_context()
+    response = await context.delete(f"/api/customer/")
 
     if response.status != 204:
         raise RequestReturnedNonExpected(response.status)
@@ -71,7 +80,8 @@ async def delete_all_customers():
 
 
 async def delete_customer(cust_id):
-    response = await _get_request_context().delete(f"/api/customer/{cust_id}")
+    context = await _get_request_context()
+    response = await context.delete(f"/api/customer/{cust_id}")
 
     if response.status != 204:
         raise RequestReturnedNonExpected(response.status)
@@ -80,7 +90,8 @@ async def delete_customer(cust_id):
 
 
 async def get_all_products():
-    response = await _get_request_context().get(f"/api/product/")
+    context = await _get_request_context()
+    response = await context.get(f"/api/product/")
 
     if response.status == 200:
         return response.json()

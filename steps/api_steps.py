@@ -1,3 +1,5 @@
+import asyncio
+
 from behave import given, when, then
 from behave import matchers
 from behave.api.async_step import async_run_until_complete
@@ -5,11 +7,12 @@ matchers.use_step_matcher("re")
 from helpers import api_helper
 from helpers.custom_exceptions import *
 
+
 @given(u'I post an existing customer to the customer create endpoint')
 @async_run_until_complete
 async def step_impl(context):
     try:
-        api_helper.post_customer(context.existing_customer)
+        await api_helper.post_customer(context.existing_customer)
     except RequestUnexpected as e:
         context.exc = e
 

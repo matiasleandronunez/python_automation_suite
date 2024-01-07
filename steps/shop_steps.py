@@ -6,6 +6,7 @@ from pages.base_page import BasePage
 from pages.storefront_page import StorefrontPage
 
 matchers.use_step_matcher("re")
+
 from helpers import api_helper
 from helpers.custom_exceptions import *
 
@@ -14,14 +15,14 @@ from helpers.custom_exceptions import *
 @given(u'I go to the storefront')
 async def go_to_sf(context):
     base_page = BasePage(context.page)
-    base_page.navigate(settings.url)
+    await base_page.navigate(settings.url)
 
 
 @async_run_until_complete
-@when('I click on add (\d+) times for (.*)')
+@when("I click on add (\d+) times for (.*)")
 async def step_impl(context, times, tile_title):
     storefront_page = StorefrontPage(context.page)
-    storefront_page.add_to_cart_by_item_name(tile_title, int(times))
+    await storefront_page.add_to_cart_by_item_name(tile_title, int(times))
 
 
 @async_run_until_complete
@@ -51,4 +52,5 @@ async def step_impl(context, quantity):
 @async_run_until_complete
 @then(u'I verify all items are displayed')
 async def step_impl(context):
-    assert len(api_helper.get_all_products()) == context.storefront_page.displayed_cards_count()
+    assert len(await api_helper.get_all_products()) == context.storefront_page.displayed_cards_count()
+

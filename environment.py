@@ -18,10 +18,10 @@ async def browser_chrome(context):
 async def before_scenario(context, scenario):
     if 'api_existing_customer' in scenario.tags:
         context.existing_customer = Customer()
-        api_helper.post_customer(context.existing_customer)
+        await api_helper.post_customer(context.existing_customer)
     elif 'api_add_new_customer' in scenario.tags:
-        context.to_update = api_helper.post_customer(Customer())
+        context.to_update = await api_helper.post_customer(Customer())
     elif 'api_delete_customer' in scenario.tags:
-        context.to_delete = api_helper.post_customer(Customer())
+        context.to_delete = await api_helper.post_customer(Customer())
 
     await use_fixture(browser_chrome, context)

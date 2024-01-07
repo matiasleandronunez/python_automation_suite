@@ -9,8 +9,8 @@ class ProductCardSection(BasePage):
 
 
     async def _product_card_base(self): return await self.page.locator(f"//div[@class='tile'][div[contains(text(),\"{self.card_title}\")]][div[@class='tileImage']]")
-    def _add_button(self): return self._product_card_base().locator("//div[@class='tileAdd']")
-    def _price(self): return self._product_card_base().locator("//div[@class='tilePrice']")
+    async def _add_button(self): return self._product_card_base().locator("//div[@class='tileAdd']")
+    async def _price(self): return self._product_card_base().locator("//div[@class='tilePrice']")
 
     # Page methods
     async def click_add(self, quantity):

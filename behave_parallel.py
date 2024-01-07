@@ -1,5 +1,5 @@
 #Behave parallel custom runner by https://stepupautomation.wordpress.com/2019/03/28/execute-tests-in-parallel-with-behave-bdd/
-
+import asyncio
 from multiprocessing import Pool
 from subprocess import call, Popen, PIPE
 from functools import partial
@@ -20,7 +20,7 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser('Running in parallel mode. Do not use features and tags argument at the same time')
     parser.add_argument('--suite', '-s', help='Please specify the suite you want to run. Default suite is regression',
-                        default='regression_suite')
+                        default='python_automation_suite')
     parser.add_argument('--feature_list', '-l',
                         help='Please specify file path of features or features location you want to run.')
     parser.add_argument('--feature', '-f', help='Please specify feature you want to run.')
@@ -68,13 +68,13 @@ def main():
     pool = Pool(args.processes)
 
     #SETUP HOOKS
-    before_run_hooks.setup_before_run()
+    asyncio.run(before_run_hooks.setup_before_run())
 
     if not args.feature_list and not args.feature and not args.tags:
         """
         Run all features in system
         """
-        features = glob('{suite}/*.feature'.format(suite=args.suite))
+        features = glob('../{suite}/features/*.feature'.format(suite=args.suite))
     elif args.feature_list and not args.tags:
         """
         Run feature list defined by users
@@ -106,14 +106,14 @@ def main():
             """
             Run a feature with specific tag
             """
-            cmd = 'behave {suite}/{feature} -d -f json --no-summary -t {tags}'.format(
+            cmd = 'behave ../{suite}/features/{feature} -d -f json --no-summary -t {tags}'.format(
                 suite=args.suite, feature=args.feature, tags=args.tags)
 
         elif args.tags:
             """
             Run tags defined by user input
             """
-            cmd = 'behave {suite}/. -d -f json --no-summary -t {tags}'.format(suite=args.suite, tags=args.tags)
+            cmd = 'behave ../{suite}/features/. -d -f json --no-summary -t {tags}'.format(suite=args.suite, tags=args.tags)
         p = Popen(cmd, stdout=PIPE, shell=True)
         out, err = p.communicate()
         scenarios = json.loads(out.decode())[0]['elements']
