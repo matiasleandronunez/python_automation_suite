@@ -94,7 +94,7 @@ async def get_all_products():
     response = await context.get(f"/api/product/")
 
     if response.status == 200:
-        return response.json()
+        return await response.json()
     elif response.status == 204:
         return []
     else:

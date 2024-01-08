@@ -12,10 +12,10 @@ class StorefrontPage(BasePage):
 
     # Page methods
     async def go_to_checkout(self):
-        return await self._checkout_button.click()
+        return await (await self._checkout_button()).click()
 
     async def go_to_create_user(self):
-        return await self._create_user_button.click()
+        return await (await self._create_user_button()).click()
 
     async def add_to_cart_by_item_name(self, tile_title, times):
         return True

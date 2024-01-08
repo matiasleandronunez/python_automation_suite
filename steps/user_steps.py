@@ -11,15 +11,15 @@ from helpers import api_helper
 from helpers.custom_exceptions import *
 
 
-@async_run_until_complete
 @when(u'I go to the user creation screen')
+@async_run_until_complete
 async def step_impl(context):
     landing_page = StorefrontPage(context.page)
     await landing_page.go_to_create_user()
 
 
-@async_run_until_complete
 @when(u'I sign up a new user')
+@async_run_until_complete
 async def step_impl(context):
     user_create_page = CreateUserPage(context.page)
     context.user = Customer()
@@ -27,8 +27,8 @@ async def step_impl(context):
     await user_create_page.click_sign_up_button()
 
 
-@async_run_until_complete
 @then(u'I verify the new user account was created')
+@async_run_until_complete
 async def step_impl(context):
     assert context.user_create_page.is_success_message_displayed(), "Expected user creation success message to be displayed"
     assert (await api_helper.get_login_token(context.user)).status_code == 200

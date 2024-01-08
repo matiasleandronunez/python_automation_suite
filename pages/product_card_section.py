@@ -15,7 +15,7 @@ class ProductCardSection(BasePage):
     # Page methods
     async def click_add(self, quantity):
         for i in range(1, quantity + 1):
-            await self._add_button.click()
+            await self._add_button().click()
 
     async def is_visible(self):
-        return await self._product_card_base.is_visible()
+        return await (await self._product_card_base()).is_visible()

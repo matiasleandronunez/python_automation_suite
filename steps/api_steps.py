@@ -17,32 +17,32 @@ async def step_impl(context):
         context.exc = e
 
 
-@async_run_until_complete
 @then(u'I verify I get a conflict response from the API')
+@async_run_until_complete
 async def step_impl(context):
     assert context.exc is not None
     assert isinstance(context.exc, RequestReturnedConflict)
 
 
-@async_run_until_complete
 @given(u'I delete a customer to the customer delete endpoint')
-async def step_impl(context):
-    context.response_httpcode = api_helper.delete_customer(context.to_delete)
-
-
 @async_run_until_complete
+async def step_impl(context):
+    context.response_httpcode = await api_helper.delete_customer(context.to_delete)
+
+
 @then(u'I verify I get a no content response from the API')
+@async_run_until_complete
 async def step_impl(context):
     assert context.response_httpcode == 204
 
 
-@async_run_until_complete
 @given(u'I post a new customer to the customer create endpoint')
-async def step_impl(context):
-    context.response_id = api_helper.post_customer()
-
-
 @async_run_until_complete
+async def step_impl(context):
+    context.response_id = await api_helper.post_customer()
+
+
 @then(u'I verify I get the customer ID from the API response')
+@async_run_until_complete
 async def step_impl(context):
     assert int(context.response_id) > 0
