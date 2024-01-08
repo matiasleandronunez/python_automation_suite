@@ -1,0 +1,5 @@
+# Placeholder so that this directory can be commited empty.
+# Ignore everything
+*
+# Except self
+!.gitignore
