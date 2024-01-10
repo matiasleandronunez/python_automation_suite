@@ -1,6 +1,7 @@
 from behave import given, when, then
 from behave import matchers
 from behave.api.async_step import async_run_until_complete
+from playwright.async_api import expect
 
 from models.customer import Customer
 from pages.storefront_page import StorefrontPage
@@ -25,10 +26,11 @@ async def step_impl(context):
     context.user = Customer()
     await user_create_page.input_user(name=context.user.username, password=context.user.password)
     await user_create_page.click_sign_up_button()
+    context.user_create_page = CreateUserPage(context.page)
 
 
 @then(u'I verify the new user account was created')
 @async_run_until_complete
 async def step_impl(context):
-    assert context.user_create_page.is_success_message_displayed(), "Expected user creation success message to be displayed"
-    assert (await api_helper.get_login_token(context.user)).status_code == 200
+    await expect(context.user_create_page.success_message()).to_be_visible()
+    assert (await api_helper.get_login_token(context.user)) == 200

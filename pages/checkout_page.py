@@ -14,20 +14,21 @@ class CheckoutPage(BasePage):
 
     # Page methods
     async def product_quantity_in_cart(self, product_title):
-        return await (self._quantity_span(product_title)).inner_text()
+        text = await self._quantity_span(product_title).inner_text()
+        return [int(s) for s in text.split() if s.isdigit()][0]  # Scrap numbers from text
 
     async def product_price_in_cart(self, product_title):
-        return await self._price_string_to_f((self._product_individual_price(product_title)).inner_text())
+        return self._price_string_to_f(await (self._product_individual_price(product_title)).inner_text())
 
     async def cart_subtotal(self):
-        return await self._price_string_to_f((self._subtotal_amount()).inner_text())
+        return self._price_string_to_f(await (self._subtotal_amount()).inner_text())
 
     async def cart_shipping(self):
-        return await self._price_string_to_f((self._shipping_amount()).inner_text())
+        return self._price_string_to_f(await (self._shipping_amount()).inner_text())
 
     async def cart_taxes(self):
-        return await self._price_string_to_f((self._taxes_amount()).inner_text())
+        return self._price_string_to_f(await (self._taxes_amount()).inner_text())
 
     async def cart_total(self):
-        return await self._price_string_to_f((self._total_amount()).inner_text())
+        return self._price_string_to_f(await (self._total_amount()).inner_text())
 
